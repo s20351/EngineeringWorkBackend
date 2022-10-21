@@ -12,6 +12,8 @@ builder.Services.AddSwaggerGen();
 // dependency injection
 builder.Services.AddTransient<IFarmersDatabaseService, FarmersDatabaseService>();
 builder.Services.AddTransient<IFarmsDatebaseService, FarmsDatabaseService>();
+builder.Services.AddTransient<ICycleDatabaseService, CycleDatabaseService>();
+builder.Services.AddTransient<IExportDatabaseService, ExportDatabaseService>();
 
 var app = builder.Build();
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PJATKInżynierka.DTOs.FarmsDTOs;
 using PJATKInżynierka.Services;
 
 namespace PJATKInżynierka.Controllers
@@ -14,13 +15,22 @@ namespace PJATKInżynierka.Controllers
             _dbService = dbService;
         }
 
-        [Route("{farmID}")]
+        [Route("{farmerID}")]
         [HttpGet]
-        public async Task<IActionResult> GetFarms(int farmID)
+        public async Task<IActionResult> GetFarms(int farmerID)
         {
-            var farms = await _dbService.GetFarms(farmID);
+            var farms = await _dbService.GetFarms(farmerID);
 
             return Ok(farms);
+        }
+
+        [Route("AddFarm/{farmerId}")]
+        [HttpPost]
+        public async Task<IActionResult> AddFarmer(AddFarmDTO farm, int farmerId)
+        {
+            await _dbService.AddFarm(farm, farmerId);
+
+            return Ok();
         }
     }
 }
