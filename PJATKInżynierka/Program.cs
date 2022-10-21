@@ -14,6 +14,8 @@ builder.Services.AddTransient<IFarmersDatabaseService, FarmersDatabaseService>()
 builder.Services.AddTransient<IFarmsDatebaseService, FarmsDatabaseService>();
 builder.Services.AddTransient<ICycleDatabaseService, CycleDatabaseService>();
 builder.Services.AddTransient<IExportDatabaseService, ExportDatabaseService>();
+builder.Services.AddTransient<IOrderHatcheryDatabaseService, OrderHatcheryDatabaseService>();
+builder.Services.AddTransient<IOrderFeedDatabaseService, OrderFeedDatabaseService>();
 
 var app = builder.Build();
 

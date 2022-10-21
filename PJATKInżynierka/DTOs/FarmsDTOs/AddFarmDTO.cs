@@ -6,10 +6,10 @@ namespace PJATKInżynierka.DTOs.FarmsDTOs
     {
         [Required(ErrorMessage = "Name is required")]
         [MaxLength(255, ErrorMessage = "String length cannot be longer than 255")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [MaxLength(255, ErrorMessage = "String length cannot be longer than 255")]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         [MaxLength(255, ErrorMessage = "String length cannot be longer than 255")]
         public string? FarmColor { get; set; }

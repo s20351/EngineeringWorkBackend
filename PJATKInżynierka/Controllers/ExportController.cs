@@ -26,7 +26,7 @@ namespace PJATKInżynierka.Controllers
 
         [Route("{cycleId}")]
         [HttpGet]
-        public async Task<IActionResult> GetCycles(int cycleId)
+        public async Task<IActionResult> GetExports(int cycleId)
         {
             var exports = await _dbService.GetExports(cycleId);
 

@@ -17,7 +17,7 @@ namespace PJATKInżynierka.Models
         }
 
         public virtual DbSet<Cycle> Cycles { get; set; } = null!;
-        public virtual DbSet<Date> Dates { get; set; } = null!;
+        public virtual DbSet<DateDelivery> DateDeliveries { get; set; } = null!;
         public virtual DbSet<Delivery> Deliveries { get; set; } = null!;
         public virtual DbSet<Export> Exports { get; set; } = null!;
         public virtual DbSet<Farm> Farms { get; set; } = null!;
@@ -64,43 +64,57 @@ namespace PJATKInżynierka.Models
                 entity.HasOne(d => d.Farm)
                     .WithMany(p => p.Cycles)
                     .HasForeignKey(d => d.FarmId)
-                    .HasConstraintName("FK__Cycle__Farm_ID__56E8E7AB");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Cycle__Farm_ID__382F5661");
             });
 
-            modelBuilder.Entity<Date>(entity =>
+            modelBuilder.Entity<DateDelivery>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.DateDelivery1)
+                    .HasName("PK__Date_Del__71134F0F5E398E45");
 
-                entity.ToTable("Date");
+                entity.ToTable("Date_Delivery");
 
-                entity.Property(e => e.Date1)
+                entity.Property(e => e.DateDelivery1)
                     .HasColumnType("date")
-                    .HasColumnName("Date");
-
-                entity.Property(e => e.DeliveryId).HasColumnName("Delivery_ID");
+                    .HasColumnName("Date_Delivery");
 
                 entity.Property(e => e.SlaughterhouseId).HasColumnName("Slaughterhouse_ID");
 
                 entity.Property(e => e.WorkingDate).HasColumnName("Working_Date");
+
+                entity.HasOne(d => d.Slaughterhouse)
+                    .WithMany(p => p.DateDeliveries)
+                    .HasForeignKey(d => d.SlaughterhouseId)
+                    .HasConstraintName("FK__Date_Deli__Slaug__3FD07829");
             });
 
             modelBuilder.Entity<Delivery>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("Delivery");
 
-                entity.HasIndex(e => e.DeliveryId, "UQ__Delivery__AA55A0189DFF39A6")
+                entity.HasIndex(e => e.ExportId, "UQ__Delivery__A52FB9F9FAEFAAF9")
                     .IsUnique();
 
                 entity.Property(e => e.DeliveryId).HasColumnName("Delivery_ID");
 
+                entity.Property(e => e.DateDelivery)
+                    .HasColumnType("date")
+                    .HasColumnName("Date_Delivery");
+
                 entity.Property(e => e.ExportId).HasColumnName("Export_ID");
 
+                entity.HasOne(d => d.DateDeliveryNavigation)
+                    .WithMany(p => p.Deliveries)
+                    .HasForeignKey(d => d.DateDelivery)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Delivery__Date_D__43A1090D");
+
                 entity.HasOne(d => d.Export)
-                    .WithMany()
-                    .HasForeignKey(d => d.ExportId)
-                    .HasConstraintName("FK__Delivery__Export__5CA1C101");
+                    .WithOne(p => p.Delivery)
+                    .HasForeignKey<Delivery>(d => d.ExportId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Delivery_Export");
             });
 
             modelBuilder.Entity<Export>(entity =>
@@ -124,7 +138,8 @@ namespace PJATKInżynierka.Models
                 entity.HasOne(d => d.Cycle)
                     .WithMany(p => p.Exports)
                     .HasForeignKey(d => d.CycleId)
-                    .HasConstraintName("FK__Export__Cycle_ID__59C55456");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Export__Cycle_ID__3B0BC30C");
             });
 
             modelBuilder.Entity<Farm>(entity =>
@@ -151,7 +166,7 @@ namespace PJATKInżynierka.Models
                 entity.HasOne(d => d.Farmer)
                     .WithMany(p => p.Farms)
                     .HasForeignKey(d => d.FarmerId)
-                    .HasConstraintName("FK__Farm__Farmer_ID__4E53A1AA");
+                    .HasConstraintName("FK__Farm__Farmer_ID__2F9A1060");
             });
 
             modelBuilder.Entity<Farmer>(entity =>
@@ -204,7 +219,7 @@ namespace PJATKInżynierka.Models
                 entity.HasOne(d => d.Farm)
                     .WithMany(p => p.OrderFeeds)
                     .HasForeignKey(d => d.FarmId)
-                    .HasConstraintName("FK__Order_fee__Farm___540C7B00");
+                    .HasConstraintName("FK__Order_fee__Farm___3552E9B6");
             });
 
             modelBuilder.Entity<OrderHatchery>(entity =>
@@ -237,7 +252,7 @@ namespace PJATKInżynierka.Models
                 entity.HasOne(d => d.Farm)
                     .WithMany(p => p.OrderHatcheries)
                     .HasForeignKey(d => d.FarmId)
-                    .HasConstraintName("FK__Order_hat__Farm___51300E55");
+                    .HasConstraintName("FK__Order_hat__Farm___32767D0B");
             });
 
             modelBuilder.Entity<Slaughterhouse>(entity =>

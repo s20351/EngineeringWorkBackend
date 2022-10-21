@@ -16,9 +16,9 @@ namespace PJATKInżynierka.Models
         public DateTime? DateOut { get; set; }
         public int NumberMale { get; set; }
         public int NumberFemale { get; set; }
-        public int? FarmId { get; set; }
+        public int FarmId { get; set; }
 
-        public virtual Farm? Farm { get; set; }
+        public virtual Farm Farm { get; set; } = null!;
         public virtual ICollection<Export> Exports { get; set; }
     }
 }

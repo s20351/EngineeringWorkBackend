@@ -5,7 +5,7 @@ namespace PJATKInżynierka.DTOs.CyclesDTOs
     public class CreateCycleDTO
     {
         [MaxLength(255, ErrorMessage = "String length cannot be longer than 255")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Required(ErrorMessage = "DateIn is required")]
         public DateTime DateIn { get; set; }

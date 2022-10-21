@@ -15,7 +15,7 @@ namespace PJATKInżynierka.Models
         public int FarmId { get; set; }
         public string? Name { get; set; }
         public string? Address { get; set; }
-        public string FarmColor { get; set; } = null!;
+        public string? FarmColor { get; set; }
         public int? FarmerId { get; set; }
 
         public virtual Farmer? Farmer { get; set; }

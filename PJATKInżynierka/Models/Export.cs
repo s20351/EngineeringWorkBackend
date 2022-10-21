@@ -11,8 +11,9 @@ namespace PJATKInżynierka.Models
         public int? NumberFemale { get; set; }
         public decimal? Weight { get; set; }
         public decimal? Price { get; set; }
-        public int? CycleId { get; set; }
+        public int CycleId { get; set; }
 
-        public virtual Cycle? Cycle { get; set; }
+        public virtual Cycle Cycle { get; set; } = null!;
+        public virtual Delivery? Delivery { get; set; }
     }
 }
