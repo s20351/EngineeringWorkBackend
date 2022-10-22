@@ -16,6 +16,7 @@ builder.Services.AddTransient<ICycleDatabaseService, CycleDatabaseService>();
 builder.Services.AddTransient<IExportDatabaseService, ExportDatabaseService>();
 builder.Services.AddTransient<IOrderHatcheryDatabaseService, OrderHatcheryDatabaseService>();
 builder.Services.AddTransient<IOrderFeedDatabaseService, OrderFeedDatabaseService>();
+builder.Services.AddTransient<IDateDeliveryDatabaseService, DateDeliveryDatabaseService>();
 
 var app = builder.Build();
 

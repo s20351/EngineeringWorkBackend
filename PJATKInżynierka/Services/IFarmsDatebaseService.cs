@@ -7,5 +7,6 @@ namespace PJATKInżynierka.Services
     {
         public Task<List<Farm>> GetFarms(int farmerID);
         public Task AddFarm(AddFarmDTO farm, int farmerId);
+        public Task<GetObjectInfoDTO> GetObjectInfo(int farmId);
     }
 }

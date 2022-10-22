@@ -15,6 +15,22 @@ namespace PJATKInżynierka.Services
 
         public async Task AddExport(AddExportDTO export, int cycleId)
         {
+            var dateDelivery = await _pjatkContext.DateDeliveries.Where(x => x.DateDelivery1 == export.Date).FirstOrDefaultAsync();
+
+            if (dateDelivery == null)
+            {
+                await _pjatkContext.DateDeliveries.AddAsync(new DateDelivery
+                {
+                    DateDelivery1 = export.Date,
+                    WorkingDate = true,
+                    SlaughterhouseId = 1
+                });
+            }
+            else if (dateDelivery.WorkingDate == false)
+            {
+                throw new Exception("Slaughterhouse does not work on that day");
+            }
+
             await _pjatkContext.Exports.AddAsync(new Export
             {
                 Date = export.Date,
@@ -26,11 +42,21 @@ namespace PJATKInżynierka.Services
             });
 
             await _pjatkContext.SaveChangesAsync();
+
+            var exportId =_pjatkContext.Exports.OrderBy( x=> x.ExportId).LastAsync().Result.ExportId;
+
+            await _pjatkContext.Deliveries.AddAsync(new Delivery
+            {
+                ExportId = exportId,
+                DateDelivery = export.Date
+            }) ;
+
+            await _pjatkContext.SaveChangesAsync();
         }
 
-        public Task<List<Export>> GetExports(int cycleId)
+        public async Task<List<Export>> GetExports(int cycleId)
         {
-            var exports = _pjatkContext.Exports.Where(x => x.CycleId == cycleId).ToListAsync();
+            var exports = await _pjatkContext.Exports.Where(x => x.CycleId == cycleId).ToListAsync();
 
             return exports;
         }
