@@ -30,16 +30,25 @@ namespace PJATKInżynierka.Controllers
         {
             await _dbService.AddFarm(farm, farmerId);
 
-            return Ok();
+            return StatusCode(200, "Farm added");
         }
 
-        [Route("GetObjectInfo/{farmID}")]
+        [Route("GetObjectCurrentInfo/{farmID}")]
         [HttpGet]
-        public async Task<IActionResult> GetObjectInfo(int farmID)
+        public async Task<IActionResult> GetObjectCurrentInfo(int farmId)
         {
-            var objectInfo = await _dbService.GetObjectInfo(farmID);
+            var objectInfo = await _dbService.GetObjectCurrentInfo(farmId);
 
             return Ok(objectInfo);
+        }
+
+        [Route("DeleteFarm/{farmId}")]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteFarm(int farmId)
+        {
+            await _dbService.DeleteFarm(farmId);
+
+            return StatusCode(200, "Farm deleted");
         }
     }
 }

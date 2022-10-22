@@ -33,12 +33,14 @@ namespace PJATKInżynierka.Services
             return farms;
         }
 
-        public async Task<GetObjectInfoDTO> GetObjectInfo(int farmId)
+        public async Task<GetObjectInfoDTO> GetObjectCurrentInfo(int farmId)
         {
             var farm = await _pjatkContext.Farms.Where(x => x.FarmId == farmId).FirstOrDefaultAsync();
-            var cycle = await _pjatkContext.Cycles.Where(x => x.FarmId == farmId && (x.DateIn<DateTime.Now && x.DateOut>DateTime.Now)).FirstOrDefaultAsync();
+            var cycle = await _pjatkContext.Cycles.Where(x => x.FarmId == farmId && (x.DateIn<=DateTime.Now && (x.DateOut>DateTime.Now||x.DateOut == null))).FirstOrDefaultAsync();
+            ValidateIfObjectIsDuringCycle(cycle);
             var orderHatchery = await _pjatkContext.OrderHatcheries.Where(x => x.FarmId == farmId && x.DateOfArrival == cycle.DateIn).FirstOrDefaultAsync();
-            var export = await _pjatkContext.Exports.Where(x => x.CycleId == cycle.CycleId).OrderByDescending(x => x.Date).LastAsync();
+
+            var export = await _pjatkContext.Exports.Where(x => x.CycleId == cycle.CycleId).ToListAsync();
 
             var objectInfo = new GetObjectInfoDTO
             {
@@ -53,6 +55,14 @@ namespace PJATKInżynierka.Services
             return objectInfo;
         }
 
+        private void ValidateIfObjectIsDuringCycle(Cycle cycle)
+        {
+            if(cycle == null)
+            {
+                throw new Exception("Object is not during cycle");
+            }
+        }
+
         private int CalculateDeadMale(Cycle cycle, OrderHatchery orderHatchery)
         {
             var deadMale = orderHatchery.NumberMale - cycle.NumberMale;
@@ -64,10 +74,24 @@ namespace PJATKInżynierka.Services
             var deadMale = orderHatchery.NumberFemale - cycle.NumberFemale;
             return deadMale;
         }
-        private int CalculateDaysToExport(Export export)
+        private int CalculateDaysToExport(List<Export> export)
         {
-            var daysToExport = (int)(export.Date - DateTime.Now).TotalDays;
-            return daysToExport;
+            if(export.Any())
+            {
+                var daysToExport = (int)(export.OrderByDescending(x => x.Date).Last().Date - DateTime.Now).TotalDays;
+                return daysToExport;
+            }
+            else {
+                return -1;
+            }
+        }
+
+        public async Task DeleteFarm(int farmId)
+        {
+            var farm = await _pjatkContext.Farms.FirstAsync(x => x.FarmId == farmId);
+           _pjatkContext.Farms.Remove(farm);
+
+            await _pjatkContext.SaveChangesAsync();
         }
     }
 }

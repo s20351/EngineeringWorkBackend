@@ -6,11 +6,11 @@ namespace PJATKInżynierka.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OderHatcheryController : ControllerBase
+    public class OrderHatcheryController : ControllerBase
     {
         private readonly IOrderHatcheryDatabaseService _dbService;
 
-        public OderHatcheryController(IOrderHatcheryDatabaseService dbService)
+        public OrderHatcheryController(IOrderHatcheryDatabaseService dbService)
         {
             _dbService = dbService;
         }
