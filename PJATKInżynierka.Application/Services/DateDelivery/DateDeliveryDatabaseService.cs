@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PJATKInżynierka.Models;
 
-namespace PJATKInżynierka.Services
+namespace Application.Services.DateDelivery
 {
     public class DateDeliveryDatabaseService : IDateDeliveryDatabaseService
     {

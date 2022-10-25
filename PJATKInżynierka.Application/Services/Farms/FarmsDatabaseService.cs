@@ -2,7 +2,7 @@
 using PJATKInżynierka.DTOs.FarmsDTOs;
 using PJATKInżynierka.Models;
 
-namespace PJATKInżynierka.Services
+namespace Application.Services.Farms
 {
     public class FarmsDatabaseService : IFarmsDatebaseService
     {
@@ -36,7 +36,7 @@ namespace PJATKInżynierka.Services
         public async Task<GetObjectInfoDTO> GetObjectCurrentInfo(int farmId)
         {
             var farm = await _pjatkContext.Farms.Where(x => x.FarmId == farmId).FirstOrDefaultAsync();
-            var cycle = await _pjatkContext.Cycles.Where(x => x.FarmId == farmId && (x.DateIn<=DateTime.Now && (x.DateOut>DateTime.Now||x.DateOut == null))).FirstOrDefaultAsync();
+            var cycle = await _pjatkContext.Cycles.Where(x => x.FarmId == farmId && x.DateIn <= DateTime.Now && (x.DateOut > DateTime.Now || x.DateOut == null)).FirstOrDefaultAsync();
             ValidateIfObjectIsDuringCycle(cycle);
             var orderHatchery = await _pjatkContext.OrderHatcheries.Where(x => x.FarmId == farmId && x.DateOfArrival == cycle.DateIn).FirstOrDefaultAsync();
 
@@ -57,7 +57,7 @@ namespace PJATKInżynierka.Services
 
         private void ValidateIfObjectIsDuringCycle(Cycle cycle)
         {
-            if(cycle == null)
+            if (cycle == null)
             {
                 throw new Exception("Object is not during cycle");
             }
@@ -76,12 +76,13 @@ namespace PJATKInżynierka.Services
         }
         private int CalculateDaysToExport(List<Export> export)
         {
-            if(export.Any())
+            if (export.Any())
             {
                 var daysToExport = (int)(export.OrderByDescending(x => x.Date).Last().Date - DateTime.Now).TotalDays;
                 return daysToExport;
             }
-            else {
+            else
+            {
                 return -1;
             }
         }
@@ -89,7 +90,7 @@ namespace PJATKInżynierka.Services
         public async Task DeleteFarm(int farmId)
         {
             var farm = await _pjatkContext.Farms.FirstAsync(x => x.FarmId == farmId);
-           _pjatkContext.Farms.Remove(farm);
+            _pjatkContext.Farms.Remove(farm);
 
             await _pjatkContext.SaveChangesAsync();
         }

@@ -1,7 +1,7 @@
 ﻿using PJATKInżynierka.DTOs.OrderHatcheryDTOs;
 using PJATKInżynierka.Models;
 
-namespace PJATKInżynierka.Services
+namespace Application.Services.OrdersHatchery
 {
     public interface IOrderHatcheryDatabaseService
     {

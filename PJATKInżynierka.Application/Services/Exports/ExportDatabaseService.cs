@@ -2,9 +2,9 @@
 using PJATKInżynierka.DTOs.ExportDTOs;
 using PJATKInżynierka.Models;
 
-namespace PJATKInżynierka.Services
+namespace Application.Services.Exports
 {
-    public class ExportDatabaseService :IExportDatabaseService
+    public class ExportDatabaseService : IExportDatabaseService
     {
         private readonly pjatkContext _pjatkContext;
 
@@ -19,7 +19,7 @@ namespace PJATKInżynierka.Services
 
             if (dateDelivery == null)
             {
-                await _pjatkContext.DateDeliveries.AddAsync(new DateDelivery
+                await _pjatkContext.DateDeliveries.AddAsync(new PJATKInżynierka.Models.DateDelivery
                 {
                     DateDelivery1 = export.Date,
                     WorkingDate = true,
@@ -43,13 +43,13 @@ namespace PJATKInżynierka.Services
 
             await _pjatkContext.SaveChangesAsync();
 
-            var exportId =_pjatkContext.Exports.OrderBy( x=> x.ExportId).LastAsync().Result.ExportId;
+            var exportId = _pjatkContext.Exports.OrderBy(x => x.ExportId).LastAsync().Result.ExportId;
 
             await _pjatkContext.Deliveries.AddAsync(new Delivery
             {
                 ExportId = exportId,
                 DateDelivery = export.Date
-            }) ;
+            });
 
             await _pjatkContext.SaveChangesAsync();
         }

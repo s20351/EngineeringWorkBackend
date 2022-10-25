@@ -1,7 +1,7 @@
 ﻿using PJATKInżynierka.DTOs.CyclesDTOs;
 using PJATKInżynierka.Models;
 
-namespace PJATKInżynierka.Services
+namespace Application.Services.Cycles
 {
     public interface ICycleDatabaseService
     {

@@ -2,7 +2,7 @@
 using PJATKInżynierka.DTOs.OrderHatcheryDTOs;
 using PJATKInżynierka.Models;
 
-namespace PJATKInżynierka.Services
+namespace Application.Services.OrdersHatchery
 {
     public class OrderHatcheryDatabaseService : IOrderHatcheryDatabaseService
     {

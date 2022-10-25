@@ -1,7 +1,7 @@
 ﻿using PJATKInżynierka.DTOs.OrderFeedDTOs;
 using PJATKInżynierka.Models;
 
-namespace PJATKInżynierka.Services
+namespace Application.Services.OrdersFeed
 {
     public interface IOrderFeedDatabaseService
     {

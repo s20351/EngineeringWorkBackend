@@ -1,7 +1,7 @@
 ﻿using PJATKInżynierka.DTOs.FarmsDTOs;
 using PJATKInżynierka.Models;
 
-namespace PJATKInżynierka.Services
+namespace Application.Services.Farms
 {
     public interface IFarmsDatebaseService
     {

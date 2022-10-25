@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace PJATKInżynierka.Models
 {
@@ -33,7 +34,7 @@ namespace PJATKInżynierka.Models
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-                optionsBuilder.UseSqlServer(configuration.GetConnectionString("pjatkDb"));
+                optionsBuilder.UseSqlServer("test");
             }
         }
 

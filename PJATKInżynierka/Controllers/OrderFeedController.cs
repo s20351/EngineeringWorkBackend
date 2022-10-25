@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.Services.OrdersFeed;
+using Microsoft.AspNetCore.Mvc;
 using PJATKInżynierka.DTOs.OrderFeedDTOs;
-using PJATKInżynierka.Services;
 
 namespace PJATKInżynierka.Controllers
 {

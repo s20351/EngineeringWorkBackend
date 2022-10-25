@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.Services.Cycles;
+using Microsoft.AspNetCore.Mvc;
 using PJATKInżynierka.DTOs.CyclesDTOs;
-using PJATKInżynierka.Services;
 
 namespace PJATKInżynierka.Controllers
 {

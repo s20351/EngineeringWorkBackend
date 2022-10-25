@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.Services.Farms;
+using Microsoft.AspNetCore.Mvc;
 using PJATKInżynierka.DTOs.FarmsDTOs;
-using PJATKInżynierka.Services;
 
 namespace PJATKInżynierka.Controllers
 {
@@ -33,7 +33,7 @@ namespace PJATKInżynierka.Controllers
             return StatusCode(200, "Farm added");
         }
 
-        [Route("GetObjectCurrentInfo/{farmID}")]
+        [Route("GetObjectCurrentInfo/{farmId}")]
         [HttpGet]
         public async Task<IActionResult> GetObjectCurrentInfo(int farmId)
         {

@@ -1,7 +1,7 @@
 ﻿using PJATKInżynierka.DTOs.ExportDTOs;
 using PJATKInżynierka.Models;
 
-namespace PJATKInżynierka.Services
+namespace Application.Services.Exports
 {
     public interface IExportDatabaseService
     {

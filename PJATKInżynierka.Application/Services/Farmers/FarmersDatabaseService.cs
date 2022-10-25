@@ -2,7 +2,7 @@
 using PJATKInżynierka.DTOs.FarmersDTOs;
 using PJATKInżynierka.Models;
 
-namespace PJATKInżynierka.Services
+namespace Application.Services.Farmers
 {
     public class FarmersDatabaseService : IFarmersDatabaseService
     {
@@ -37,7 +37,7 @@ namespace PJATKInżynierka.Services
         {
             var farmer = await _pjatkContext.Farmers.FirstOrDefaultAsync(x => x.FarmerId == farmerID);
 
-            if(farmer != null)
+            if (farmer != null)
             {
                 return farmer;
             }

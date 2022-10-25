@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.Services.Farmers;
+using Microsoft.AspNetCore.Mvc;
 using PJATKInżynierka.DTOs.FarmersDTOs;
-using PJATKInżynierka.Models;
-using PJATKInżynierka.Services;
 
 namespace PJATKInżynierka.Controllers
 {
