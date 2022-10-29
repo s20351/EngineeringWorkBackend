@@ -37,13 +37,19 @@ namespace Application.Services.Farms
         {
             var farm = await _pjatkContext.Farms.Where(x => x.FarmId == farmId).FirstOrDefaultAsync();
             var cycle = await _pjatkContext.Cycles.Where(x => x.FarmId == farmId && x.DateIn <= DateTime.Now && (x.DateOut > DateTime.Now || x.DateOut == null)).FirstOrDefaultAsync();
-            ValidateIfObjectIsDuringCycle(cycle);
+            
+            if(cycle == null)
+            {
+                return null;
+            }
+
             var orderHatchery = await _pjatkContext.OrderHatcheries.Where(x => x.FarmId == farmId && x.DateOfArrival == cycle.DateIn).FirstOrDefaultAsync();
 
             var export = await _pjatkContext.Exports.Where(x => x.CycleId == cycle.CycleId).ToListAsync();
 
             var objectInfo = new GetObjectInfoDTO
             {
+                ObjectID = farmId,
                 ObjectName = farm.Name,
                 AliveMale = cycle.NumberMale,
                 AliveFemale = cycle.NumberFemale,
@@ -52,15 +58,8 @@ namespace Application.Services.Farms
                 BreedingDay = (int)(DateTime.Now - cycle.DateIn).TotalDays,
                 DaysToExport = CalculateDaysToExport(export)
             };
-            return objectInfo;
-        }
 
-        private void ValidateIfObjectIsDuringCycle(Cycle cycle)
-        {
-            if (cycle == null)
-            {
-                throw new Exception("Object is not during cycle");
-            }
+            return objectInfo;
         }
 
         private int CalculateDeadMale(Cycle cycle, OrderHatchery orderHatchery)
@@ -93,6 +92,20 @@ namespace Application.Services.Farms
             _pjatkContext.Farms.Remove(farm);
 
             await _pjatkContext.SaveChangesAsync();
+        }
+
+        public async Task<List<GetObjectInfoDTO>> GetHome(int farmerID)
+        {
+            var farms = await _pjatkContext.Farms.Where(x => x.FarmerId == farmerID).ToListAsync();
+
+            List<GetObjectInfoDTO> list = new List<GetObjectInfoDTO>();
+
+            foreach (Farm farm in farms)
+            {
+                list.Add(GetObjectCurrentInfo(farm.FarmId).Result);
+            }
+
+            return list;
         }
     }
 }

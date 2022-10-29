@@ -9,5 +9,6 @@ namespace Application.Services.Farms
         public Task AddFarm(AddFarmDTO farm, int farmerId);
         public Task<GetObjectInfoDTO> GetObjectCurrentInfo(int farmId);
         public Task DeleteFarm(int farmId);
+        public Task<List<GetObjectInfoDTO>> GetHome(int farmerID);
     }
 }

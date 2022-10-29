@@ -50,5 +50,14 @@ namespace PJATKInżynierka.Controllers
 
             return StatusCode(200, "Farm deleted");
         }
+
+        [Route("GetHome")]
+        [HttpGet]
+        public async Task<IActionResult> GetHome(int farmerID)
+        {
+            var home = await _dbService.GetHome(farmerID);
+
+            return Ok(home);
+        }
     }
 }

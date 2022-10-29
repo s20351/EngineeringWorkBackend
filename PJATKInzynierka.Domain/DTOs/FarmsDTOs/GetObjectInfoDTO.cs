@@ -2,6 +2,7 @@
 {
     public class GetObjectInfoDTO
     {
+        public int ObjectID { get; set; }
         public string ObjectName { get; set; }
         public int AliveMale { get; set; }
         public int AliveFemale { get; set; }

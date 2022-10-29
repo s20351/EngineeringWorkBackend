@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PJATKInżynierka.DTOs.FarmersDTOs;
+using PJATKInżynierka.DTOs.FarmsDTOs;
 using PJATKInżynierka.Models;
 
 namespace Application.Services.Farmers
@@ -46,5 +47,6 @@ namespace Application.Services.Farmers
                 throw new Exception($"Farmer with ID:{farmerID} doesn't exist");
             }
         }
+
     }
 }
