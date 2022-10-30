@@ -1,4 +1,5 @@
 ﻿using Application.Services.DateDelivery;
+using Domain.DTOs.DeliveriesDTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PJATKInżynierka.Controllers
@@ -31,13 +32,12 @@ namespace PJATKInżynierka.Controllers
             return Ok(deliveries);
         }
 
-        [Route("{date}")]
-        [HttpGet]
-        public async Task<IActionResult> AddDelivery(DateTime date)
+        [HttpPost]
+        public async Task<IActionResult> AddDelivery(AddDeliveryDTO addDeliveryDTO)
         {
-            var deliveries = await _dbService.GetDeliveries(date);
+            await _dbService.AddDelivery(addDeliveryDTO);
 
-            return Ok(deliveries);
+            return StatusCode(200, "Delivery added");
         }
     }
 }

@@ -30,6 +30,17 @@ namespace Application.Services.DateDelivery
                 throw new Exception("Slaughterhouse does not work on that day");
             }
 
+            await _pjatkContext.SaveChangesAsync();
+
+            var termID = _pjatkContext.Terms.OrderBy(x => x.TermId).LastAsync().Result.TermId;
+
+            await _pjatkContext.Deliveries.AddAsync(new Delivery
+            {
+                TermTermId = termID,
+                Weight = addDeliveryDTO.Weight,
+            });
+
+            await _pjatkContext.SaveChangesAsync();
         }
 
         public async Task<List<Delivery>> GetDeliveries(DateTime date)
@@ -53,7 +64,7 @@ namespace Application.Services.DateDelivery
             
             foreach (var delivery in deliveries)
             {
-                if(delivery.TermTerm != null)
+                if(delivery.TermTerm.Exports.Any())
                 {
                     foreach(var export in delivery.TermTerm.Exports)
                     {
