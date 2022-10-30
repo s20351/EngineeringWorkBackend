@@ -15,13 +15,31 @@ namespace PJATKInżynierka.Controllers
             _dbService = dbService;
         }
 
-        [Route("AddOrderHatchery/{farmId}")]
+        [Route("{farmId}")]
         [HttpPost]
         public async Task<IActionResult> AddOrderHatchery(AddOrderHatcheryDTO orderHatchery, int farmId)
         {
             await _dbService.AddOrderHatchery(orderHatchery, farmId);
 
             return Ok();
+        }
+
+        [Route("{farmId}")]
+        [HttpGet]
+        public async Task<IActionResult> GetOrdersHatchery(int farmId)
+        {
+            var deliveries = await  _dbService.GetOrdersHatchery(farmId);
+
+            return Ok(deliveries);
+        }
+
+        [Route("GetDeliveriesDates/{farmId}")]
+        [HttpGet]
+        public async Task<IActionResult> GetDeliveriesDates(int farmId)
+        {
+            var deliveries = await _dbService.GetDeliveriesDates(farmId);
+
+            return Ok(deliveries);
         }
     }
 }

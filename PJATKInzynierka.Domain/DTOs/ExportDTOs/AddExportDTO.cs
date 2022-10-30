@@ -6,6 +6,5 @@
         public int NumberMale { get; set; }
         public int NumberFemale { get; set; }
         public decimal Weight { get; set; }
-        public decimal Price { get; set; }
     }
 }

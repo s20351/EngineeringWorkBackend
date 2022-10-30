@@ -4,8 +4,8 @@ namespace PJATKInżynierka.DTOs.OrderHatcheryDTOs
 {
     public class AddOrderHatcheryDTO
     {
-        [MaxLength(255, ErrorMessage = "String length cannot be longer than 255")]
-        public string? SupplierName { get; set; }
+        [Required]
+        public int HatcheryID{ get; set; }
 
         [Required]
         public DateTime DateOfOrder { get; set; }
@@ -18,8 +18,5 @@ namespace PJATKInżynierka.DTOs.OrderHatcheryDTOs
 
         [Required]
         public int NumberFemale { get; set; }
-
-        public decimal Price { get; set; }
-
     }
 }

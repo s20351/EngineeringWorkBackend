@@ -1,13 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace PJATKInżynierka.Models
+namespace Domain.Models
 {
     public partial class pjatkContext : DbContext
     {
         public pjatkContext()
         {
-
         }
 
         public pjatkContext(DbContextOptions<pjatkContext> options)
@@ -15,31 +16,51 @@ namespace PJATKInżynierka.Models
         {
         }
 
+        public virtual DbSet<Address> Addresses { get; set; } = null!;
         public virtual DbSet<Cycle> Cycles { get; set; } = null!;
-        public virtual DbSet<DateDelivery> DateDeliveries { get; set; } = null!;
         public virtual DbSet<Delivery> Deliveries { get; set; } = null!;
         public virtual DbSet<Export> Exports { get; set; } = null!;
         public virtual DbSet<Farm> Farms { get; set; } = null!;
         public virtual DbSet<Farmer> Farmers { get; set; } = null!;
+        public virtual DbSet<Feedhouse> Feedhouses { get; set; } = null!;
+        public virtual DbSet<Hatchery> Hatcheries { get; set; } = null!;
         public virtual DbSet<OrderFeed> OrderFeeds { get; set; } = null!;
         public virtual DbSet<OrderHatchery> OrderHatcheries { get; set; } = null!;
-        public virtual DbSet<Slaughterhouse> Slaughterhouses { get; set; } = null!;
+        public virtual DbSet<Term> Terms { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                .AddJsonFile("appsettings.Development.json")
-                .Build();
-
-                optionsBuilder.UseSqlServer(configuration.GetConnectionString("pjatkDb"));
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=tcp:s20351.database.windows.net,1433;Initial Catalog=pjatk;Persist Security Info=False;User ID=CloudSA5651b49a;Password=adminadmin1.;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Address>(entity =>
+            {
+                entity.ToTable("Address");
+
+                entity.Property(e => e.AddressId).HasColumnName("Address_ID");
+
+                entity.Property(e => e.City)
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FlatNumber).HasColumnName("Flat_number");
+
+                entity.Property(e => e.PostalCode)
+                    .HasMaxLength(15)
+                    .IsUnicode(false)
+                    .HasColumnName("Postal_Code");
+
+                entity.Property(e => e.Street)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<Cycle>(entity =>
             {
                 entity.ToTable("Cycle");
@@ -55,69 +76,37 @@ namespace PJATKInżynierka.Models
                     .HasColumnName("Date_out");
 
                 entity.Property(e => e.Description)
-                    .HasMaxLength(255)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.FarmId).HasColumnName("Farm_ID");
+                entity.Property(e => e.FarmFarmId).HasColumnName("FarmFarm_ID");
 
                 entity.Property(e => e.NumberFemale).HasColumnName("Number_female");
 
                 entity.Property(e => e.NumberMale).HasColumnName("Number_male");
 
-                entity.HasOne(d => d.Farm)
+                entity.HasOne(d => d.FarmFarm)
                     .WithMany(p => p.Cycles)
-                    .HasForeignKey(d => d.FarmId)
+                    .HasForeignKey(d => d.FarmFarmId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Cycle__Farm_ID__382F5661");
-            });
-
-            modelBuilder.Entity<DateDelivery>(entity =>
-            {
-                entity.HasKey(e => e.DateDelivery1)
-                    .HasName("PK__Date_Del__71134F0F5E398E45");
-
-                entity.ToTable("Date_Delivery");
-
-                entity.Property(e => e.DateDelivery1)
-                    .HasColumnType("date")
-                    .HasColumnName("Date_Delivery");
-
-                entity.Property(e => e.SlaughterhouseId).HasColumnName("Slaughterhouse_ID");
-
-                entity.Property(e => e.WorkingDate).HasColumnName("Working_Date");
-
-                entity.HasOne(d => d.Slaughterhouse)
-                    .WithMany(p => p.DateDeliveries)
-                    .HasForeignKey(d => d.SlaughterhouseId)
-                    .HasConstraintName("FK__Date_Deli__Slaug__3FD07829");
+                    .HasConstraintName("FKCycle540539");
             });
 
             modelBuilder.Entity<Delivery>(entity =>
             {
                 entity.ToTable("Delivery");
 
-                entity.HasIndex(e => e.ExportId, "UQ__Delivery__A52FB9F9FAEFAAF9")
-                    .IsUnique();
-
                 entity.Property(e => e.DeliveryId).HasColumnName("Delivery_ID");
 
-                entity.Property(e => e.DateDelivery)
-                    .HasColumnType("date")
-                    .HasColumnName("Date_Delivery");
+                entity.Property(e => e.TermTermId).HasColumnName("TermTerm_ID");
 
-                entity.Property(e => e.ExportId).HasColumnName("Export_ID");
+                entity.Property(e => e.Weight).HasColumnType("decimal(10, 2)");
 
-                entity.HasOne(d => d.DateDeliveryNavigation)
+                entity.HasOne(d => d.TermTerm)
                     .WithMany(p => p.Deliveries)
-                    .HasForeignKey(d => d.DateDelivery)
+                    .HasForeignKey(d => d.TermTermId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Delivery__Date_D__43A1090D");
-
-                entity.HasOne(d => d.Export)
-                    .WithOne(p => p.Delivery)
-                    .HasForeignKey<Delivery>(d => d.ExportId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Delivery_Export");
+                    .HasConstraintName("FKDelivery824514");
             });
 
             modelBuilder.Entity<Export>(entity =>
@@ -126,23 +115,26 @@ namespace PJATKInżynierka.Models
 
                 entity.Property(e => e.ExportId).HasColumnName("Export_ID");
 
-                entity.Property(e => e.CycleId).HasColumnName("Cycle_ID");
-
-                entity.Property(e => e.Date).HasColumnType("date");
+                entity.Property(e => e.CycleCycleId).HasColumnName("CycleCycle_ID");
 
                 entity.Property(e => e.NumberFemale).HasColumnName("Number_female");
 
                 entity.Property(e => e.NumberMale).HasColumnName("Number_male");
 
-                entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.TermTermId).HasColumnName("TermTerm_ID");
 
-                entity.Property(e => e.Weight).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Weight).HasColumnType("decimal(10, 2)");
 
-                entity.HasOne(d => d.Cycle)
+                entity.HasOne(d => d.CycleCycle)
                     .WithMany(p => p.Exports)
-                    .HasForeignKey(d => d.CycleId)
+                    .HasForeignKey(d => d.CycleCycleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Export__Cycle_ID__3B0BC30C");
+                    .HasConstraintName("FKExport982076");
+
+                entity.HasOne(d => d.TermTerm)
+                    .WithMany(p => p.Exports)
+                    .HasForeignKey(d => d.TermTermId)
+                    .HasConstraintName("FKExport746414");
             });
 
             modelBuilder.Entity<Farm>(entity =>
@@ -151,25 +143,29 @@ namespace PJATKInżynierka.Models
 
                 entity.Property(e => e.FarmId).HasColumnName("Farm_ID");
 
-                entity.Property(e => e.Address)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.AddressAddressId).HasColumnName("AddressAddress_ID");
 
                 entity.Property(e => e.FarmColor)
-                    .HasMaxLength(255)
+                    .HasMaxLength(15)
                     .IsUnicode(false)
-                    .HasColumnName("Farm_Color");
+                    .HasColumnName("Farm_color");
 
-                entity.Property(e => e.FarmerId).HasColumnName("Farmer_ID");
+                entity.Property(e => e.FarmerFarmerId).HasColumnName("FarmerFarmer_ID");
 
                 entity.Property(e => e.Name)
-                    .HasMaxLength(255)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.HasOne(d => d.Farmer)
+                entity.HasOne(d => d.AddressAddress)
                     .WithMany(p => p.Farms)
-                    .HasForeignKey(d => d.FarmerId)
-                    .HasConstraintName("FK__Farm__Farmer_ID__2F9A1060");
+                    .HasForeignKey(d => d.AddressAddressId)
+                    .HasConstraintName("FKFarm142300");
+
+                entity.HasOne(d => d.FarmerFarmer)
+                    .WithMany(p => p.Farms)
+                    .HasForeignKey(d => d.FarmerFarmerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FKFarm281886");
             });
 
             modelBuilder.Entity<Farmer>(entity =>
@@ -179,19 +175,45 @@ namespace PJATKInżynierka.Models
                 entity.Property(e => e.FarmerId).HasColumnName("Farmer_ID");
 
                 entity.Property(e => e.FarmerColor)
-                    .HasMaxLength(20)
+                    .HasMaxLength(15)
                     .IsUnicode(false)
-                    .HasColumnName("Farmer_Color");
-
-                entity.Property(e => e.KeyFarmer).HasColumnName("Key_Farmer");
+                    .HasColumnName("Farmer_color");
 
                 entity.Property(e => e.Name)
-                    .HasMaxLength(255)
+                    .HasMaxLength(55)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Surname)
-                    .HasMaxLength(255)
+                    .HasMaxLength(55)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Feedhouse>(entity =>
+            {
+                entity.ToTable("Feedhouse");
+
+                entity.Property(e => e.FeedhouseId).HasColumnName("Feedhouse_ID");
+
+                entity.Property(e => e.AddressAddressId).HasColumnName("AddressAddress_ID");
+
+                entity.HasOne(d => d.AddressAddress)
+                    .WithMany(p => p.Feedhouses)
+                    .HasForeignKey(d => d.AddressAddressId)
+                    .HasConstraintName("FKFeedhouse327062");
+            });
+
+            modelBuilder.Entity<Hatchery>(entity =>
+            {
+                entity.ToTable("Hatchery");
+
+                entity.Property(e => e.HatcheryId).HasColumnName("Hatchery_ID");
+
+                entity.Property(e => e.AddressAddressId).HasColumnName("AddressAddress_ID");
+
+                entity.HasOne(d => d.AddressAddress)
+                    .WithMany(p => p.Hatcheries)
+                    .HasForeignKey(d => d.AddressAddressId)
+                    .HasConstraintName("FKHatchery405757");
             });
 
             modelBuilder.Entity<OrderFeed>(entity =>
@@ -208,21 +230,22 @@ namespace PJATKInżynierka.Models
                     .HasColumnType("date")
                     .HasColumnName("Date_of_order");
 
-                entity.Property(e => e.FarmId).HasColumnName("Farm_ID");
+                entity.Property(e => e.FarmFarmId).HasColumnName("FarmFarm_ID");
 
-                entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.FeedhouseFeedhouseId).HasColumnName("FeedhouseFeedhouse_ID");
 
-                entity.Property(e => e.SupplierName)
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasColumnName("Supplier_name");
+                entity.Property(e => e.Weight).HasColumnType("decimal(10, 2)");
 
-                entity.Property(e => e.Weight).HasColumnType("decimal(18, 0)");
-
-                entity.HasOne(d => d.Farm)
+                entity.HasOne(d => d.FarmFarm)
                     .WithMany(p => p.OrderFeeds)
-                    .HasForeignKey(d => d.FarmId)
-                    .HasConstraintName("FK__Order_fee__Farm___3552E9B6");
+                    .HasForeignKey(d => d.FarmFarmId)
+                    .HasConstraintName("FKOrder_feed336265");
+
+                entity.HasOne(d => d.FeedhouseFeedhouse)
+                    .WithMany(p => p.OrderFeeds)
+                    .HasForeignKey(d => d.FeedhouseFeedhouseId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FKOrder_feed873423");
             });
 
             modelBuilder.Entity<OrderHatchery>(entity =>
@@ -231,42 +254,47 @@ namespace PJATKInżynierka.Models
 
                 entity.Property(e => e.OrderHatcheryId).HasColumnName("Order_hatchery_ID");
 
-                entity.Property(e => e.DateOfArrival)
+                entity.Property(e => e.DataOfArrival)
                     .HasColumnType("date")
-                    .HasColumnName("Date_of_arrival");
+                    .HasColumnName("Data_of_arrival");
 
-                entity.Property(e => e.DateOfOrder)
+                entity.Property(e => e.DataOfOrder)
                     .HasColumnType("date")
-                    .HasColumnName("Date_of_order");
+                    .HasColumnName("Data_of_order");
 
-                entity.Property(e => e.FarmId).HasColumnName("Farm_ID");
+                entity.Property(e => e.FarmFarmId).HasColumnName("FarmFarm_ID");
+
+                entity.Property(e => e.HatcheryHatcheryId).HasColumnName("HatcheryHatchery_ID");
 
                 entity.Property(e => e.NumberFemale).HasColumnName("Number_female");
 
                 entity.Property(e => e.NumberMale).HasColumnName("Number_male");
 
-                entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
-
-                entity.Property(e => e.SupplierName)
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasColumnName("Supplier_name");
-
-                entity.HasOne(d => d.Farm)
+                entity.HasOne(d => d.FarmFarm)
                     .WithMany(p => p.OrderHatcheries)
-                    .HasForeignKey(d => d.FarmId)
-                    .HasConstraintName("FK__Order_hat__Farm___32767D0B");
+                    .HasForeignKey(d => d.FarmFarmId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FKOrder_hatc744795");
+
+                entity.HasOne(d => d.HatcheryHatchery)
+                    .WithMany(p => p.OrderHatcheries)
+                    .HasForeignKey(d => d.HatcheryHatcheryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FKOrder_hatc519528");
             });
 
-            modelBuilder.Entity<Slaughterhouse>(entity =>
+            modelBuilder.Entity<Term>(entity =>
             {
-                entity.ToTable("Slaughterhouse");
+                entity.ToTable("Term");
 
-                entity.Property(e => e.SlaughterhouseId).HasColumnName("Slaughterhouse_ID");
+                entity.HasIndex(e => e.Date, "UQ__Term__77387D075BD3DB24")
+                    .IsUnique();
 
-                entity.Property(e => e.Address)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.TermId).HasColumnName("Term_ID");
+
+                entity.Property(e => e.Date).HasColumnType("date");
+
+                entity.Property(e => e.IsWorkingDay).HasColumnName("Is_working_day");
             });
 
             OnModelCreatingPartial(modelBuilder);

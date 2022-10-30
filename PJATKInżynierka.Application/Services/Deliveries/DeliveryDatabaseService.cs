@@ -1,0 +1,83 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Domain.Models;
+using Domain.DTOs.DeliveriesDTOs;
+
+namespace Application.Services.DateDelivery
+{
+    public class DeliveryDatabaseService : IDeliveryDatabaseService
+    {
+        private readonly pjatkContext _pjatkContext;
+
+        public DeliveryDatabaseService()
+        {
+            _pjatkContext = new pjatkContext();
+        }
+
+        public async Task AddDelivery(AddDeliveryDTO addDeliveryDTO)
+        {
+            var dateDelivery = await _pjatkContext.Terms.Where(x => x.Date == addDeliveryDTO.DeliveryDate).FirstOrDefaultAsync();
+
+            if (dateDelivery == null)
+            {
+                await _pjatkContext.Terms.AddAsync(new Term
+                {
+                    Date = addDeliveryDTO.DeliveryDate,
+                    IsWorkingDay = true,
+                });
+            }
+            else if (dateDelivery.IsWorkingDay == false)
+            {
+                throw new Exception("Slaughterhouse does not work on that day");
+            }
+
+        }
+
+        public async Task<List<Delivery>> GetDeliveries(DateTime date)
+        {
+            var dateDeliveries = await _pjatkContext.Deliveries.Where(x => x.TermTerm.Date == date).ToListAsync();
+
+            return dateDeliveries;
+        }
+
+        public async Task<List<GetDeliveriesDTO>> GetDeliveries()
+        {
+            List<GetDeliveriesDTO> getDeliveriesDTOs = new List<GetDeliveriesDTO>();
+
+            await _pjatkContext.Farms.LoadAsync();
+            await _pjatkContext.Farmers.LoadAsync();
+            await _pjatkContext.Cycles.LoadAsync();
+            await _pjatkContext.Exports.LoadAsync();
+            await _pjatkContext.Terms.LoadAsync();
+
+            var deliveries = await _pjatkContext.Deliveries.Where(x => x.TermTerm.Date >= DateTime.Now).ToListAsync();
+            
+            foreach (var delivery in deliveries)
+            {
+                if(delivery.TermTerm != null)
+                {
+                    foreach(var export in delivery.TermTerm.Exports)
+                    {
+                        getDeliveriesDTOs.Add(new GetDeliveriesDTO
+                        {
+                            Date = delivery.TermTerm.Date,
+                            Name = export.CycleCycle.FarmFarm.FarmerFarmer.Name,
+                            Surname = export.CycleCycle.FarmFarm.FarmerFarmer.Surname,
+                            Weight = delivery.Weight
+                        });
+                    }
+                }
+                else
+                {
+                    getDeliveriesDTOs.Add(new GetDeliveriesDTO
+                    {
+                        Date = delivery.TermTerm.Date,
+                        Weight = delivery.Weight
+                    });
+                } 
+
+            }
+
+            return getDeliveriesDTOs;
+        }
+    }
+}

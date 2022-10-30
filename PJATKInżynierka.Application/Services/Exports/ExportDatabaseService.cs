@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using PJATKInżynierka.DTOs.ExportDTOs;
-using PJATKInżynierka.Models;
 
 namespace Application.Services.Exports
 {
@@ -15,40 +15,38 @@ namespace Application.Services.Exports
 
         public async Task AddExport(AddExportDTO export, int cycleId)
         {
-            var dateDelivery = await _pjatkContext.DateDeliveries.Where(x => x.DateDelivery1 == export.Date).FirstOrDefaultAsync();
+            var dateDelivery = await _pjatkContext.Terms.Where(x => x.Date == export.Date).FirstOrDefaultAsync();
 
             if (dateDelivery == null)
             {
-                await _pjatkContext.DateDeliveries.AddAsync(new PJATKInżynierka.Models.DateDelivery
+                await _pjatkContext.Terms.AddAsync(new Term
                 {
-                    DateDelivery1 = export.Date,
-                    WorkingDate = true,
-                    SlaughterhouseId = 1
+                    Date = export.Date,
+                    IsWorkingDay = true,
                 });
             }
-            else if (dateDelivery.WorkingDate == false)
+            else if (dateDelivery.IsWorkingDay == false)
             {
                 throw new Exception("Slaughterhouse does not work on that day");
             }
 
+            await _pjatkContext.SaveChangesAsync();
+
+            var termID = _pjatkContext.Terms.OrderBy(x => x.TermId).LastAsync().Result.TermId;
+
             await _pjatkContext.Exports.AddAsync(new Export
             {
-                Date = export.Date,
+                TermTermId = termID,
                 NumberMale = export.NumberMale,
                 NumberFemale = export.NumberFemale,
                 Weight = export.Weight,
-                Price = export.Price,
-                CycleId = cycleId
+                CycleCycleId = cycleId
             });
-
-            await _pjatkContext.SaveChangesAsync();
-
-            var exportId = _pjatkContext.Exports.OrderBy(x => x.ExportId).LastAsync().Result.ExportId;
 
             await _pjatkContext.Deliveries.AddAsync(new Delivery
             {
-                ExportId = exportId,
-                DateDelivery = export.Date
+                Weight = export.Weight,
+                TermTermId = termID,
             });
 
             await _pjatkContext.SaveChangesAsync();
@@ -56,7 +54,7 @@ namespace Application.Services.Exports
 
         public async Task<List<Export>> GetExports(int cycleId)
         {
-            var exports = await _pjatkContext.Exports.Where(x => x.CycleId == cycleId).ToListAsync();
+            var exports = await _pjatkContext.Exports.Where(x => x.CycleCycleId == cycleId).ToListAsync();
 
             return exports;
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Domain.DTOs.OrderFeedDTOs;
+using Domain.Models;
 using PJATKInżynierka.DTOs.OrderFeedDTOs;
-using PJATKInżynierka.Models;
 
 namespace Application.Services.OrdersFeed
 {
@@ -17,12 +18,11 @@ namespace Application.Services.OrdersFeed
         {
             await _pjatkContext.OrderFeeds.AddAsync(new OrderFeed
             {
-                SupplierName = orderFeed.SupplierName,
+                FeedhouseFeedhouseId = orderFeed.FeedHouseID,
                 DateOfArrival = orderFeed.DateOfArrival,
                 DateOfOrder = orderFeed.DateOfOrder,
                 Weight = orderFeed.Weight,
-                Price = orderFeed.Price,
-                FarmId = farmId
+                FarmFarmId = farmId
             });
 
             await _pjatkContext.SaveChangesAsync();
@@ -30,8 +30,45 @@ namespace Application.Services.OrdersFeed
 
         public async Task<List<OrderFeed>> GetOrdersFeed(int farmId)
         {
-            var ordersFeed = await _pjatkContext.OrderFeeds.Where(x => x.FarmId == farmId).ToListAsync();
+            var ordersFeed = await _pjatkContext.OrderFeeds.Where(x => x.FarmFarmId == farmId).ToListAsync();
             return ordersFeed;
+        }
+
+        public async Task<List<DateTime>> GetDeliveriesDates(int farmId)
+        {
+            var deliveryDates = new List<DateTime>();
+            var ordersFeed = await _pjatkContext.OrderFeeds.Where(x => x.FarmFarmId == farmId).ToListAsync();
+
+            foreach (var orderHatchery in ordersFeed)
+            {
+                deliveryDates.Add(orderHatchery.DateOfArrival);
+            }
+
+            return deliveryDates;
+        }
+
+        public async Task<List<GetOrdersScheduleDTO>> GetOrdersSchedule(int farmerId)
+        {
+            List<GetOrdersScheduleDTO> ordersSchedule = new List<GetOrdersScheduleDTO>();
+
+            var farms = await _pjatkContext.Farms.Where(x => x.FarmerFarmerId == farmerId).ToListAsync();
+            
+            foreach(var farm in farms)
+            {
+               var deliveries = await _pjatkContext.OrderFeeds.Where(x => x.FarmFarmId == farm.FarmId).ToListAsync();
+                
+                foreach(var delivery in deliveries)
+                {
+                    ordersSchedule.Add(new GetOrdersScheduleDTO
+                    {
+                        FermName = farm.Name,
+                        ArrivalDate = delivery.DateOfArrival,
+                        Weight = delivery.Weight,
+                    });
+                }
+            }
+
+            return ordersSchedule;
         }
     }
 }

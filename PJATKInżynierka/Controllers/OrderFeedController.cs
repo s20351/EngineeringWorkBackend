@@ -15,13 +15,40 @@ namespace PJATKInżynierka.Controllers
             _dbService = dbService;
         }
 
-        [Route("AddOrderFeed")]
+        [Route("{farmId}")]
         [HttpPost]
-        public async Task<IActionResult> AddOrderFeed(AddOrderFeedDTO orderHatchery, [FromQuery(Name = "farmId")] int farmId)
+        public async Task<IActionResult> AddOrderFeed(AddOrderFeedDTO orderHatchery, int farmId)
         {
             await _dbService.AddOrderFeed(orderHatchery, farmId);
 
             return Ok();
+        }
+
+        [Route("{farmId}")]
+        [HttpGet]
+        public async Task<IActionResult> GetOrdersFeed(int farmId)
+        {
+            var deliveries = await _dbService.GetOrdersFeed(farmId);
+
+            return Ok(deliveries);
+        }
+
+        [Route("GetDeliveriesDates/{farmId}")]
+        [HttpGet]
+        public async Task<IActionResult> GetDeliveriesDates(int farmId)
+        {
+            var deliveries = await _dbService.GetDeliveriesDates(farmId);
+
+            return Ok(deliveries);
+        }
+
+        [Route("GetOrdersSchedule/{farmerId})")]
+        [HttpGet]
+        public async Task<IActionResult> GetOrdersSchedule(int farmerId)
+        {
+            var schedule = await _dbService.GetOrdersSchedule(farmerId);
+
+            return Ok(schedule);
         }
     }
 }

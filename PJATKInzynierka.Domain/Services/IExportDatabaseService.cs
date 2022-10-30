@@ -1,5 +1,6 @@
-﻿using PJATKInżynierka.DTOs.ExportDTOs;
-using PJATKInżynierka.Models;
+﻿using Domain.Models;
+using PJATKInżynierka.DTOs.ExportDTOs;
+
 
 namespace Application.Services.Exports
 {

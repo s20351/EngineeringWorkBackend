@@ -51,11 +51,11 @@ namespace PJATKInżynierka.Controllers
             return StatusCode(200, "Farm deleted");
         }
 
-        [Route("GetHome")]
+        [Route("GetHomeDetails")]
         [HttpGet]
-        public async Task<IActionResult> GetHome(int farmerID)
+        public async Task<IActionResult> GetHomeDetails(int farmerID)
         {
-            var home = await _dbService.GetHome(farmerID);
+            var home = await _dbService.GetHomeDetails(farmerID);
 
             return Ok(home);
         }

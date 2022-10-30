@@ -12,9 +12,6 @@ namespace PJATKInżynierka.DTOs.FarmersDTOs
         [MaxLength(255, ErrorMessage = "String length cannot be longer than 255")]
         public string? Surname { get; set; }
 
-        [Required(ErrorMessage = "KeyFarmer is required")]
-        public bool KeyFarmer { get; set; }
-
         [MaxLength(255, ErrorMessage = "String length cannot be longer than 255")]
         public string? FarmerColor { get; set; }
     }

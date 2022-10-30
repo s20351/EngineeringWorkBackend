@@ -8,8 +8,7 @@ namespace PJATKInżynierka.DTOs.FarmsDTOs
         [MaxLength(255, ErrorMessage = "String length cannot be longer than 255")]
         public string? Name { get; set; }
 
-        [MaxLength(255, ErrorMessage = "String length cannot be longer than 255")]
-        public string? Address { get; set; }
+        public int? AddressID { get; set; }
 
         [MaxLength(255, ErrorMessage = "String length cannot be longer than 255")]
         public string? FarmColor { get; set; }

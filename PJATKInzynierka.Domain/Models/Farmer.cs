@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PJATKInżynierka.Models
+namespace Domain.Models
 {
     public partial class Farmer
     {
@@ -13,8 +13,7 @@ namespace PJATKInżynierka.Models
         public int FarmerId { get; set; }
         public string Name { get; set; } = null!;
         public string Surname { get; set; } = null!;
-        public bool KeyFarmer { get; set; }
-        public string? FarmerColor { get; set; }
+        public string FarmerColor { get; set; } = null!;
 
         public virtual ICollection<Farm> Farms { get; set; }
     }

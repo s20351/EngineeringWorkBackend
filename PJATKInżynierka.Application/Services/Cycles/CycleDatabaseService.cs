@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PJATKInżynierka.DTOs.CyclesDTOs;
-using PJATKInżynierka.Models;
+using Domain.Models;
 
 namespace Application.Services.Cycles
 {
@@ -22,7 +22,7 @@ namespace Application.Services.Cycles
                 DateOut = cycle.DateOut,
                 NumberMale = cycle.NumberMale,
                 NumberFemale = cycle.NumberFemale,
-                FarmId = farmId
+                FarmFarmId = farmId
             });
 
             await _pjatkContext.SaveChangesAsync();
@@ -30,7 +30,7 @@ namespace Application.Services.Cycles
 
         public async Task<List<Cycle>> GetCycles(int farmId)
         {
-            var cycles = await _pjatkContext.Cycles.Where(x => x.FarmId == farmId).ToListAsync();
+            var cycles = await _pjatkContext.Cycles.Where(x => x.FarmFarmId == farmId).ToListAsync();
 
             return cycles;
         }

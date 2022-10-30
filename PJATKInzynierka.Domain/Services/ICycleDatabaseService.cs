@@ -1,5 +1,5 @@
-﻿using PJATKInżynierka.DTOs.CyclesDTOs;
-using PJATKInżynierka.Models;
+﻿using Domain.Models;
+using PJATKInżynierka.DTOs.CyclesDTOs;
 
 namespace Application.Services.Cycles
 {

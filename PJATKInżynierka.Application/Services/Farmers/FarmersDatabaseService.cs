@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using PJATKInżynierka.DTOs.FarmersDTOs;
 using PJATKInżynierka.DTOs.FarmsDTOs;
-using PJATKInżynierka.Models;
 
 namespace Application.Services.Farmers
 {
@@ -20,7 +20,6 @@ namespace Application.Services.Farmers
             {
                 Name = farmer.Name,
                 Surname = farmer.Surname,
-                KeyFarmer = farmer.KeyFarmer,
                 FarmerColor = farmer.FarmerColor,
             });
 

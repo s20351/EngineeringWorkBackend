@@ -1,5 +1,5 @@
-﻿using PJATKInżynierka.DTOs.FarmersDTOs;
-using PJATKInżynierka.Models;
+﻿using Domain.Models;
+using PJATKInżynierka.DTOs.FarmersDTOs;
 
 namespace Application.Services.Farmers
 {
