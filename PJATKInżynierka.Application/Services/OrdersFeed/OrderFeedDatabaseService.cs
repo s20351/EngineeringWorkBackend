@@ -2,6 +2,7 @@
 using Domain.DTOs.OrderFeedDTOs;
 using Domain.Models;
 using PJATKInżynierka.DTOs.OrderFeedDTOs;
+using Infrastructure.Database;
 
 namespace Application.Services.OrdersFeed
 {
@@ -9,9 +10,9 @@ namespace Application.Services.OrdersFeed
     {
         private readonly pjatkContext _pjatkContext;
 
-        public OrderFeedDatabaseService()
+        public OrderFeedDatabaseService(pjatkContext pjatkContext)
         {
-            _pjatkContext = new pjatkContext();
+            _pjatkContext = pjatkContext;
         }
 
         public async Task AddOrderFeed(AddOrderFeedDTO orderFeed, int farmId)

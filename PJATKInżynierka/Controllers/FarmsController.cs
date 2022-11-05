@@ -26,7 +26,7 @@ namespace PJATKInżynierka.Controllers
 
         [Route("AddFarm/{farmerId}")]
         [HttpPost]
-        public async Task<IActionResult> AddFarmer(AddFarmDTO farm, int farmerId)
+        public async Task<IActionResult> AddFarm(AddFarmDTO farm, int farmerId)
         {
             await _dbService.AddFarm(farm, farmerId);
 

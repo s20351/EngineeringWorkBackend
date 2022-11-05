@@ -5,6 +5,9 @@ using Application.Services.Farmers;
 using Application.Services.Farms;
 using Application.Services.OrdersFeed;
 using Application.Services.OrdersHatchery;
+using Infrastructure.Database;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -15,13 +18,21 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins("http://localhost:5173" , "http://localhost:5174");
+                          policy.AllowAnyOrigin();
+                          policy.AllowAnyHeader();
+                          policy.AllowAnyMethod();
+                          policy.WithMethods("GET", "PUT", "DELETE", "POST", "PATCH");
                       });
 });
 
+builder.Services.AddDbContext<pjatkContext>
+    (options => options.UseSqlServer(builder.Configuration.GetConnectionString("pjatkDb")));
+
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles); 
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

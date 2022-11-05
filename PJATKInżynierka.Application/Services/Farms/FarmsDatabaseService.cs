@@ -1,4 +1,6 @@
-﻿using Domain.Models;
+﻿using Domain.DTOs.FarmsDTOs;
+using Domain.Models;
+using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using PJATKInżynierka.DTOs.FarmsDTOs;
 
@@ -9,9 +11,9 @@ namespace Application.Services.Farms
     {
         private readonly pjatkContext _pjatkContext;
 
-        public FarmsDatabaseService()
+        public FarmsDatabaseService(pjatkContext pjatkContext)
         {
-            _pjatkContext = new pjatkContext();
+            _pjatkContext = pjatkContext;
         }
 
         public async Task AddFarm(AddFarmDTO farm, int farmerId)
@@ -27,11 +29,23 @@ namespace Application.Services.Farms
             await _pjatkContext.SaveChangesAsync();
         }
 
-        public async Task<List<Farm>> GetFarms(int farmerID)
+        public async Task<List<GetFarmDTO>> GetFarms(int farmerID)
         {
             var farms = await _pjatkContext.Farms.Where(x => x.FarmerFarmerId == farmerID).ToListAsync();
 
-            return farms;
+            List<GetFarmDTO> getFarmDTOs = new List<GetFarmDTO>();
+
+            foreach(Farm farm in farms)
+            {
+                getFarmDTOs.Add(
+                    new GetFarmDTO
+                    {
+                        FarmId = farm.FarmId,
+                        Name = farm.Name
+                    });
+            }
+
+            return getFarmDTOs;
         }
 
         public async Task<GetObjectInfoDTO> GetObjectCurrentInfo(int farmId)
@@ -41,7 +55,17 @@ namespace Application.Services.Farms
             
             if(cycle == null)
             {
-                return null;
+                return new GetObjectInfoDTO
+                {
+                    ObjectID = farmId,
+                    ObjectName = farm.Name,
+                    AliveMale = 0,
+                    AliveFemale = 0,
+                    DeadMale = 0,
+                    DeadFemale = 0,
+                    BreedingDay = 0,
+                    DaysToExport = 0
+                };
             }
 
             var orderHatchery = await _pjatkContext.OrderHatcheries.Where(x => x.FarmFarmId == farmId && x.DataOfArrival == cycle.DateIn).FirstOrDefaultAsync();
@@ -101,6 +125,45 @@ namespace Application.Services.Farms
 
         public async Task DeleteFarm(int farmId)
         {
+            var cycles = await _pjatkContext.Cycles.Where(x => x.FarmFarmId == farmId).ToListAsync();
+
+            if(cycles.Any())
+            {
+                foreach(var cycle in cycles)
+                { 
+                    {
+                        var exports = await _pjatkContext.Exports.Where(x => x.CycleCycleId == cycle.CycleId).ToListAsync();
+
+                        if (exports.Any())
+                        {
+                            foreach(var export in exports)
+                            {
+                                _pjatkContext.Exports.Remove(export);
+                            }
+                        }
+
+                        _pjatkContext.Cycles.Remove(cycle);
+                    }
+                }
+            }
+            var orderHatcheries = await _pjatkContext.OrderHatcheries.Where(x => x.FarmFarmId == farmId).ToListAsync();
+            if(orderHatcheries.Any())
+            {
+                foreach (var order in orderHatcheries)
+                {
+                    _pjatkContext.OrderHatcheries.Remove(order);
+                }
+            }
+
+            var orderFeeds = await _pjatkContext.OrderFeeds.Where(x => x.FarmFarmId == farmId).ToListAsync();
+            if (orderFeeds.Any())
+            {
+                foreach (var order in orderFeeds)
+                {
+                    _pjatkContext.OrderFeeds.Remove(order);
+                }
+            }
+
             var farm = await _pjatkContext.Farms.FirstAsync(x => x.FarmId == farmId);
             _pjatkContext.Farms.Remove(farm);
 

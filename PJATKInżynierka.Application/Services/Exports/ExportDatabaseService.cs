@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using PJATKInżynierka.DTOs.ExportDTOs;
 
@@ -8,9 +9,9 @@ namespace Application.Services.Exports
     {
         private readonly pjatkContext _pjatkContext;
 
-        public ExportDatabaseService()
+        public ExportDatabaseService(pjatkContext pjatkContext)
         {
-            _pjatkContext = new pjatkContext();
+            _pjatkContext = pjatkContext;
         }
 
         public async Task AddExport(AddExportDTO export, int cycleId)

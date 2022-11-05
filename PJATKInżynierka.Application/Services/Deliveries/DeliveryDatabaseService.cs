@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Domain.Models;
 using Domain.DTOs.DeliveriesDTOs;
+using Infrastructure.Database;
 
 namespace Application.Services.DateDelivery
 {
@@ -8,9 +9,9 @@ namespace Application.Services.DateDelivery
     {
         private readonly pjatkContext _pjatkContext;
 
-        public DeliveryDatabaseService()
+        public DeliveryDatabaseService(pjatkContext pjatkContext)
         {
-            _pjatkContext = new pjatkContext();
+            _pjatkContext = pjatkContext;
         }
 
         public async Task AddDelivery(AddDeliveryDTO addDeliveryDTO)

@@ -24,11 +24,11 @@ namespace PJATKInżynierka.Controllers
             return Ok();
         }
 
-        [Route("{farmId}")]
+        [Route("{farmerId}")]
         [HttpGet]
-        public async Task<IActionResult> GetCycles(int farmId)
+        public async Task<IActionResult> GetCycles(int farmerId)
         {
-            var cycles = await _dbService.GetCycles(farmId);
+            var cycles = await _dbService.GetCycles(farmerId);
 
             return Ok(cycles);
         }

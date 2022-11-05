@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using PJATKInżynierka.DTOs.FarmersDTOs;
 using PJATKInżynierka.DTOs.FarmsDTOs;
@@ -9,9 +10,9 @@ namespace Application.Services.Farmers
     {
         private readonly pjatkContext _pjatkContext;
 
-        public FarmersDatabaseService()
+        public FarmersDatabaseService(pjatkContext pjatkContext)
         {
-            _pjatkContext = new pjatkContext();
+            _pjatkContext = pjatkContext;
         }
 
         public async Task AddFarmer(AddFarmerDTO farmer)

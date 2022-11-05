@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PJATKInżynierka.DTOs.CyclesDTOs;
 using Domain.Models;
+using Infrastructure.Database;
+using Domain.DTOs.CyclesDTOs;
 
 namespace Application.Services.Cycles
 {
@@ -8,29 +10,49 @@ namespace Application.Services.Cycles
     {
         private readonly pjatkContext _pjatkContext;
 
-        public CycleDatabaseService()
+        public CycleDatabaseService(pjatkContext pjatkContext)
         {
-            _pjatkContext = new pjatkContext();
+            _pjatkContext = pjatkContext;
         }
 
         public async Task CreateCycle(CreateCycleDTO cycle, int farmId)
         {
+            var hatcheryOrder = await _pjatkContext.OrderHatcheries.FirstOrDefaultAsync(x => x.OrderHatcheryId == cycle.HatcheryOrderID);
+
             await _pjatkContext.Cycles.AddAsync(new Cycle
             {
                 Description = cycle.Description,
-                DateIn = cycle.DateIn,
+                DateIn = hatcheryOrder.DataOfArrival,
                 DateOut = cycle.DateOut,
-                NumberMale = cycle.NumberMale,
-                NumberFemale = cycle.NumberFemale,
+                NumberMale = hatcheryOrder.NumberMale,
+                NumberFemale = hatcheryOrder.NumberFemale,
                 FarmFarmId = farmId
             });
 
             await _pjatkContext.SaveChangesAsync();
         }
 
-        public async Task<List<Cycle>> GetCycles(int farmId)
+        public async Task<List<GetCycleDTO>> GetCycles(int farmerId)
         {
-            var cycles = await _pjatkContext.Cycles.Where(x => x.FarmFarmId == farmId).ToListAsync();
+            List<GetCycleDTO> cycles = new List<GetCycleDTO>();
+
+            var farms = await _pjatkContext.Farms.Where(x => x.FarmerFarmerId == farmerId).ToListAsync();
+            if(farms.Any())
+            {
+                foreach(var farm in farms)
+                {
+                    var farmCycles = await _pjatkContext.Cycles.Where(x => x.FarmFarmId == farm.FarmId).ToListAsync();
+
+                    foreach(var farmCycle in farmCycles)
+                    {
+                        cycles.Add(new GetCycleDTO
+                        {
+                            CycleId = farmCycle.CycleId,
+                            CycleDescription = farmCycle.Description
+                        });
+                    }
+                }
+            }
 
             return cycles;
         }

@@ -8,9 +8,6 @@ namespace PJATKInżynierka.DTOs.OrderHatcheryDTOs
         public int HatcheryID{ get; set; }
 
         [Required]
-        public DateTime DateOfOrder { get; set; }
-
-        [Required]
         public DateTime DateOfArrival { get; set; }
 
         [Required]

@@ -1,4 +1,6 @@
-﻿using Domain.Models;
+﻿using Domain.DTOs.DeliveriesDTOs;
+using Domain.Models;
+using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using PJATKInżynierka.DTOs.OrderHatcheryDTOs;
 
@@ -8,9 +10,9 @@ namespace Application.Services.OrdersHatchery
     {
         private readonly pjatkContext _pjatkContext;
 
-        public OrderHatcheryDatabaseService()
+        public OrderHatcheryDatabaseService(pjatkContext pjatkContext)
         {
-            _pjatkContext = new pjatkContext();
+            _pjatkContext = pjatkContext;
         }
 
         public async Task AddOrderHatchery(AddOrderHatcheryDTO orderHatchery, int farmId)
@@ -18,7 +20,7 @@ namespace Application.Services.OrdersHatchery
             await _pjatkContext.OrderHatcheries.AddAsync(new OrderHatchery
             {
                 HatcheryHatcheryId = orderHatchery.HatcheryID,
-                DataOfOrder = orderHatchery.DateOfOrder,
+                DataOfOrder = DateTime.Now,
                 DataOfArrival = orderHatchery.DateOfArrival,
                 NumberMale = orderHatchery.NumberMale,
                 NumberFemale = orderHatchery.NumberFemale,
@@ -28,15 +30,20 @@ namespace Application.Services.OrdersHatchery
             await _pjatkContext.SaveChangesAsync();
         }
 
-        public async Task<List<DateTime>> GetDeliveriesDates(int farmId)
+        public async Task<List<GetDeliveriesDatesDTO>> GetDeliveriesDates(int farmId)
         {
-            var deliveryDates = new List<DateTime>();
+            var deliveryDates = new List<GetDeliveriesDatesDTO>();
             var ordersHatchery = await _pjatkContext.OrderHatcheries.Where(x => x.FarmFarmId == farmId).ToListAsync();
 
             foreach (var orderHatchery in ordersHatchery)
             {
-                deliveryDates.Add(orderHatchery.DataOfArrival);
+                deliveryDates.Add(new GetDeliveriesDatesDTO
+                {
+                    DeliveryID = orderHatchery.OrderHatcheryId,
+                    Date = orderHatchery.DataOfArrival.ToShortDateString()
+                });
             }
+
             return deliveryDates;
         }
 
