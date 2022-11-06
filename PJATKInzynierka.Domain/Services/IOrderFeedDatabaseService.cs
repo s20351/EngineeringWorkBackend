@@ -1,6 +1,7 @@
 ﻿using PJATKInżynierka.DTOs.OrderFeedDTOs;
 using Domain.Models;
 using Domain.DTOs.OrderFeedDTOs;
+using Domain.DTOs.FarmsDTOs;
 
 namespace Application.Services.OrdersFeed
 {
@@ -10,5 +11,6 @@ namespace Application.Services.OrdersFeed
         public Task<List<OrderFeed>> GetOrdersFeed(int farmId);
         public Task<List<DateTime>> GetDeliveriesDates(int farmId);
         public Task<List<GetOrdersScheduleDTO>> GetOrdersSchedule(int farmerId);
+        public Task<List<FarmEventDTO>> GetFeedFarmerEvents(int farmerId);
     }
 }

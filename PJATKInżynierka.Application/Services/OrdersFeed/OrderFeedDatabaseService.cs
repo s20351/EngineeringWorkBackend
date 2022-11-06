@@ -3,6 +3,8 @@ using Domain.DTOs.OrderFeedDTOs;
 using Domain.Models;
 using PJATKInżynierka.DTOs.OrderFeedDTOs;
 using Infrastructure.Database;
+using System.Globalization;
+using Domain.DTOs.FarmsDTOs;
 
 namespace Application.Services.OrdersFeed
 {
@@ -21,7 +23,7 @@ namespace Application.Services.OrdersFeed
             {
                 FeedhouseFeedhouseId = orderFeed.FeedHouseID,
                 DateOfArrival = orderFeed.DateOfArrival,
-                DateOfOrder = orderFeed.DateOfOrder,
+                DateOfOrder = DateTime.Now,
                 Weight = orderFeed.Weight,
                 FarmFarmId = farmId
             });
@@ -53,7 +55,8 @@ namespace Application.Services.OrdersFeed
             List<GetOrdersScheduleDTO> ordersSchedule = new List<GetOrdersScheduleDTO>();
 
             var farms = await _pjatkContext.Farms.Where(x => x.FarmerFarmerId == farmerId).ToListAsync();
-            
+            await _pjatkContext.Feedhouses.LoadAsync();
+
             foreach(var farm in farms)
             {
                var deliveries = await _pjatkContext.OrderFeeds.Where(x => x.FarmFarmId == farm.FarmId).ToListAsync();
@@ -62,14 +65,40 @@ namespace Application.Services.OrdersFeed
                 {
                     ordersSchedule.Add(new GetOrdersScheduleDTO
                     {
-                        FermName = farm.Name,
-                        ArrivalDate = delivery.DateOfArrival,
-                        Weight = delivery.Weight,
+                        ObjectID = farm.FarmId,
+                        FarmName = farm.Name,
+                        ArrivalDate = delivery.DateOfArrival.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                        Weight = delivery.Weight
                     });
                 }
             }
 
             return ordersSchedule;
+        }
+
+        public async Task<List<FarmEventDTO>> GetFeedFarmerEvents(int farmerId)
+        {
+            List<FarmEventDTO> list = new List<FarmEventDTO>();
+
+            var farms = await _pjatkContext.Farms.Where(x => x.FarmerFarmerId == farmerId).ToListAsync();
+
+            foreach(var farm in farms)
+            {
+                var orderFeeds = await _pjatkContext.OrderFeeds.Where(x => x.FarmFarmId == farm.FarmId).ToListAsync();
+
+                foreach (var orderFeed in orderFeeds)
+                {
+                    list.Add(new FarmEventDTO
+                    {
+                        Title = "Pasza",
+                        AllDay = true,
+                        Start = orderFeed.DateOfArrival.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                        End = orderFeed.DateOfArrival.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+                    });
+                }
+            }
+
+            return list;
         }
     }
 }

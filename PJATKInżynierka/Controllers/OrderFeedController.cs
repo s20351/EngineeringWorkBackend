@@ -42,13 +42,22 @@ namespace PJATKInżynierka.Controllers
             return Ok(deliveries);
         }
 
-        [Route("GetOrdersSchedule/{farmerId})")]
+        [Route("GetOrdersSchedule/{farmerId}")]
         [HttpGet]
         public async Task<IActionResult> GetOrdersSchedule(int farmerId)
         {
             var schedule = await _dbService.GetOrdersSchedule(farmerId);
 
             return Ok(schedule);
+        }
+
+        [Route("GetEvents/{farmerId}")]
+        [HttpGet]
+        public async Task<IActionResult> GetFeedFarmerEvents(int farmerId)
+        {
+            var objectInfo = await _dbService.GetFeedFarmerEvents(farmerId);
+
+            return Ok(objectInfo);
         }
     }
 }

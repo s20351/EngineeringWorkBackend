@@ -3,7 +3,7 @@ using Domain.Models;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using PJATKInżynierka.DTOs.FarmsDTOs;
-
+using System.Globalization;
 
 namespace Application.Services.Farms
 {
@@ -179,6 +179,67 @@ namespace Application.Services.Farms
             foreach (Farm farm in farms)
             {
                 list.Add(GetObjectCurrentInfo(farm.FarmId).Result);
+            }
+
+            return list;
+        }
+
+        public async Task<List<FarmEventDTO>> GetAllFarmEvents(int farmId)
+        {
+            List<FarmEventDTO> list = new List<FarmEventDTO>();
+
+            var orderFeeds = await _pjatkContext.OrderFeeds.Where(x => x.FarmFarmId == farmId).ToListAsync();
+            var orderHatcheries = await _pjatkContext.OrderHatcheries.Where(x => x.FarmFarmId == farmId).ToListAsync();
+            var cycles = await _pjatkContext.Cycles.Where(x => x.FarmFarmId == farmId).ToListAsync();
+            await _pjatkContext.Terms.LoadAsync();
+
+            foreach (var orderFeed in orderFeeds)
+            {
+                list.Add(new FarmEventDTO
+                {
+                    Title = "Pasza",
+                    AllDay = true,
+                    Start = orderFeed.DateOfArrival.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                    End = orderFeed.DateOfArrival.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+                });
+            }
+
+            foreach (var orderHatchery in orderHatcheries)
+            {
+                list.Add(new FarmEventDTO
+                {
+                    Title = "Pisklaki",
+                    AllDay = true,
+                    Start = orderHatchery.DataOfArrival.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                    End = orderHatchery.DataOfArrival.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+                });
+            }
+
+            foreach (var cycle in cycles)
+            {
+                list.Add(new FarmEventDTO
+                {
+                    Title = cycle.Description,
+                    AllDay = true,
+                    Start = cycle.DateIn.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                    End = cycle.DateOut.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+                });
+
+                var exports = await _pjatkContext.Exports.Where(x => x.CycleCycleId == cycle.CycleId).ToListAsync();
+
+                foreach(var export in exports)
+                {
+                    if(export.TermTerm != null)
+                    {
+                        list.Add(new FarmEventDTO
+                        {
+                            Title = "Zdawanie",
+                            AllDay = true,
+                            Start = export.TermTerm.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                            End = export.TermTerm.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+                        });
+                    }
+                }
             }
 
             return list;

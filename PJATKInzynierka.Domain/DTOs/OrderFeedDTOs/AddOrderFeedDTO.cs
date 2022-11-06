@@ -7,8 +7,6 @@ namespace PJATKInżynierka.DTOs.OrderFeedDTOs
         [Required]
         public int FeedHouseID { get; set; }
         [Required]
-        public DateTime DateOfOrder { get ; set; }
-        [Required]
         public DateTime DateOfArrival { get; set; }
         public decimal Weight { get; set; }
     }

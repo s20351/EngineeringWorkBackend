@@ -2,8 +2,9 @@
 {
     public class GetOrdersScheduleDTO
     {
-        public string FermName { get; set; }
-        public DateTime ArrivalDate { get; set; }
+        public int ObjectID { get; set; }
+        public string? FarmName { get; set; }
+        public string ArrivalDate { get; set; }
         public decimal Weight { get; set; }
     }
 }
