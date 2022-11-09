@@ -40,5 +40,14 @@ namespace PJATKInżynierka.Controllers
 
             return Ok();
         }
+
+        [Route("GetFarmerEvents/{farmerId}")]
+        [HttpGet]
+        public async Task<IActionResult> GetFarmerEvents(int farmerId)
+        {
+            var objectInfo = await _dbService.GetFarmerEvents(farmerId);
+
+            return Ok(objectInfo);
+        }
     }
 }

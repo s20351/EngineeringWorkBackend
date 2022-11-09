@@ -106,8 +106,9 @@ namespace Application.Services.Farms
 
                 foreach(Export export in exports)
                 {
-                    var exportDay = _pjatkContext.Terms.FirstOrDefault(x => x.TermId == export.TermTermId);
+                    var exportDay = _pjatkContext.Terms.FirstOrDefault(x => x.TermId == export.TermTermId && x.Date > DateTime.Now);
 
+                    if(exportDay != null)
                     exportDays.Add(exportDay);
                 }
 

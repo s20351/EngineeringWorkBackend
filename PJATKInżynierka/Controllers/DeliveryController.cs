@@ -39,5 +39,14 @@ namespace PJATKInżynierka.Controllers
 
             return StatusCode(200, "Delivery added");
         }
+
+        [Route("GetEvents")]
+        [HttpGet]
+        public async Task<IActionResult> GetEvents()
+        {
+            var objectInfo = await _dbService.GetEvents();
+
+            return Ok(objectInfo);
+        }
     }
 }
