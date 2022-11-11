@@ -3,6 +3,7 @@ using PJATKInżynierka.DTOs.CyclesDTOs;
 using Domain.Models;
 using Infrastructure.Database;
 using Domain.DTOs.CyclesDTOs;
+using System.Globalization;
 
 namespace Application.Services.Cycles
 {
@@ -48,7 +49,8 @@ namespace Application.Services.Cycles
                         cycles.Add(new GetCycleDTO
                         {
                             CycleId = farmCycle.CycleId,
-                            CycleDescription = farmCycle.Description
+                            CycleDescription = farmCycle.Description,
+                            EndCycleDate = farmCycle.DateOut.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
                         });
                     }
                 }

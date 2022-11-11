@@ -10,5 +10,6 @@
         public int DeadFemale { get; set; }
         public int BreedingDay {get; set;}
         public int DaysToExport { get; set; }
+        public bool IsDuringCycle { get; set; }
     }
 }

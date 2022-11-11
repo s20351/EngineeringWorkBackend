@@ -59,12 +59,7 @@ namespace Application.Services.Farms
                 {
                     ObjectID = farmId,
                     ObjectName = farm.Name,
-                    AliveMale = 0,
-                    AliveFemale = 0,
-                    DeadMale = 0,
-                    DeadFemale = 0,
-                    BreedingDay = 0,
-                    DaysToExport = 0
+                    IsDuringCycle = false
                 };
             }
 
@@ -81,7 +76,8 @@ namespace Application.Services.Farms
                 DeadMale = CalculateDeadMale(cycle, orderHatchery),
                 DeadFemale = CalculateDeadFemale(cycle, orderHatchery),
                 BreedingDay = (int)(DateTime.Now - cycle.DateIn).TotalDays,
-                DaysToExport = CalculateDaysToExport(export)
+                DaysToExport = CalculateDaysToExport(export),
+                IsDuringCycle = true
             };
 
             return objectInfo;

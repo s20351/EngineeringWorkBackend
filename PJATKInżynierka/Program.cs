@@ -5,8 +5,10 @@ using Application.Services.Farmers;
 using Application.Services.Farms;
 using Application.Services.OrdersFeed;
 using Application.Services.OrdersHatchery;
+using Azure.Identity;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -25,8 +27,9 @@ builder.Services.AddCors(options =>
                       });
 });
 
+
 builder.Services.AddDbContext<pjatkContext>
-    (options => options.UseSqlServer(builder.Configuration.GetConnectionString("pjatkDb")));
+        (options => options.UseSqlServer(builder.Configuration.GetConnectionString("pjatkDb")));
 
 // Add services to the container.
 
@@ -36,6 +39,14 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.ConfigureSwaggerGen(setup =>
+{
+    setup.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Wstawienia indos",
+        Version = "v1"
+    });
+});
 
 // dependency injection
 builder.Services.AddTransient<IFarmersDatabaseService, FarmersDatabaseService>();
@@ -49,11 +60,9 @@ builder.Services.AddTransient<IDeliveryDatabaseService, DeliveryDatabaseService>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Lotus.API.Integration v1"));
+
 
 app.UseCors(MyAllowSpecificOrigins);
 
