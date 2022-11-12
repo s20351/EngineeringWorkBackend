@@ -241,5 +241,22 @@ namespace Application.Services.Farms
 
             return list;
         }
+
+        public async Task AddDeaths(AddDeathsDTO addDeaths , int farmId)
+        {
+            var farm = await _pjatkContext.Farms.FirstAsync(x => x.FarmId == farmId);
+            await _pjatkContext.Cycles.LoadAsync();
+            foreach(var cycle in farm.Cycles)
+            {
+                if(cycle.DateIn <= DateTime.Now && (cycle.DateOut > DateTime.Now))
+                {
+                    cycle.NumberMale -= addDeaths.DeathsMale;
+                    cycle.NumberFemale -= addDeaths.DeathsFemale;
+                    _pjatkContext.Cycles.Update(cycle);
+                    await _pjatkContext.SaveChangesAsync();
+                    break;
+                }
+            }
+        }
     }
 }

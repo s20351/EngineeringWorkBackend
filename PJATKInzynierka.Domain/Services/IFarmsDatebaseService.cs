@@ -11,5 +11,6 @@ namespace Application.Services.Farms
         public Task DeleteFarm(int farmId);
         public Task<List<GetObjectInfoDTO>> GetHomeDetails(int farmerId);
         public Task<List<FarmEventDTO>> GetAllFarmEvents(int farmId);
+        public Task AddDeaths(AddDeathsDTO addDeaths, int farmId);
     }
 }

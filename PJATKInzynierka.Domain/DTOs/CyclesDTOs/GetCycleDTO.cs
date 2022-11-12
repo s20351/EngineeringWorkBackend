@@ -5,5 +5,6 @@
         public int CycleId { get; set; }
         public string CycleDescription { get; set; }
         public string EndCycleDate { get; set; }
+        public string StartCycleDate { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Application.Services.Farms;
+using Domain.DTOs.FarmsDTOs;
 using Microsoft.AspNetCore.Mvc;
 using PJATKInżynierka.DTOs.FarmsDTOs;
 
@@ -67,6 +68,15 @@ namespace PJATKInżynierka.Controllers
             var objectInfo = await _dbService.GetAllFarmEvents(farmId);
 
             return Ok(objectInfo);
+        }
+
+        [Route("AddDeaths/{farmId}")]
+        [HttpPost]
+        public async Task<IActionResult> AddDeaths(AddDeathsDTO addDeathsDTO, int farmId)
+        {
+             await _dbService.AddDeaths(addDeathsDTO, farmId);
+
+            return StatusCode(200, "Deaths added");
         }
     }
 }

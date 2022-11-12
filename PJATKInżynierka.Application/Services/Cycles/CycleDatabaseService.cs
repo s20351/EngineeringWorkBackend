@@ -50,7 +50,8 @@ namespace Application.Services.Cycles
                         {
                             CycleId = farmCycle.CycleId,
                             CycleDescription = farmCycle.Description,
-                            EndCycleDate = farmCycle.DateOut.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+                            EndCycleDate = farmCycle.DateOut.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                            StartCycleDate = farmCycle.DateIn.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
                         });
                     }
                 }
