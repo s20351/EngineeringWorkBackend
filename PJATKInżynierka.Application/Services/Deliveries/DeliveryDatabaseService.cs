@@ -35,11 +35,11 @@ namespace Application.Services.DateDelivery
 
             await _pjatkContext.SaveChangesAsync();
 
-            var termID = _pjatkContext.Terms.OrderBy(x => x.TermId).LastAsync().Result.TermId;
+            var term = await _pjatkContext.Terms.FirstAsync(x => x.Date == addDeliveryDTO.DeliveryDate);
 
             await _pjatkContext.Deliveries.AddAsync(new Delivery
             {
-                TermTermId = termID,
+                TermTermId = term.TermId,
                 Weight = addDeliveryDTO.Weight,
             });
 
@@ -64,23 +64,27 @@ namespace Application.Services.DateDelivery
             await _pjatkContext.Terms.LoadAsync();
 
             var deliveries = await _pjatkContext.Deliveries.Where(x => x.TermTerm.Date >= DateTime.Now).ToListAsync();
-            
+            var exports = await _pjatkContext.Exports.ToListAsync();
+
+            List<int> termIds = new List<int>();
+
+            foreach(var export in exports)
+            {
+                getDeliveriesDTOs.Add(new GetDeliveriesDTO
+                {
+                    Date = export.TermTerm.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                    Name = export.CycleCycle.FarmFarm.FarmerFarmer.Name,
+                    Surname = export.CycleCycle.FarmFarm.FarmerFarmer.Surname,
+                    Weight = export.Weight
+                });
+
+                termIds.Add((int)export.TermTermId!);
+            }
+
+
             foreach (var delivery in deliveries)
             {
-                if(delivery.TermTerm.Exports.Any())
-                {
-                    foreach(var export in delivery.TermTerm.Exports)
-                    {
-                        getDeliveriesDTOs.Add(new GetDeliveriesDTO
-                        {
-                            Date = delivery.TermTerm.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
-                            Name = export.CycleCycle.FarmFarm.FarmerFarmer.Name,
-                            Surname = export.CycleCycle.FarmFarm.FarmerFarmer.Surname,
-                            Weight = delivery.Weight
-                        });
-                    }
-                }
-                else
+                if(!termIds.Contains(delivery.TermTermId))
                 {
                     getDeliveriesDTOs.Add(new GetDeliveriesDTO
                     {
@@ -89,8 +93,11 @@ namespace Application.Services.DateDelivery
                         Name = "Obcy hodowca",
                         Surname = "Obcy hodowca"
                     });
-                } 
-
+                }
+                else
+                {
+                    termIds.Remove(delivery.TermTermId);
+                }
             }
             
             return getDeliveriesDTOs.OrderBy(x => x.Date).ToList(); 
@@ -100,27 +107,19 @@ namespace Application.Services.DateDelivery
         {
             List<FarmEventDTO> events = new List<FarmEventDTO>();
 
-            var deliveries = await _pjatkContext.Deliveries.ToListAsync();
-            await _pjatkContext.Terms.LoadAsync();
-            await _pjatkContext.Exports.LoadAsync();
-            await _pjatkContext.Cycles.LoadAsync();
-            await _pjatkContext.Farms.LoadAsync();
-            await _pjatkContext.Farmers.LoadAsync();
+            List<GetDeliveriesDTO> deliveries = await GetDeliveries();
 
             foreach (var delivery in deliveries)
             {
-                if (delivery.TermTerm.Exports.Any())
+                if (!delivery.Name!.Equals("Obcy hodowca"))
                 {
-                    foreach(var export in delivery.TermTerm.Exports)
-                    {
                         events.Add(new FarmEventDTO
                         {
-                            Title = $"Dostawa od {export.CycleCycle.FarmFarm.FarmerFarmer.Name} {export.CycleCycle.FarmFarm.FarmerFarmer.Surname} ",
+                            Title = $"Dostawa od {delivery.Name} {delivery.Surname} ",
                             AllDay = true,
-                            Start = delivery.TermTerm.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
-                            End = delivery.TermTerm.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+                            Start = delivery.Date,
+                            End = delivery.Date
                         });
-                    }
                 }
                 else
                 {
@@ -128,8 +127,8 @@ namespace Application.Services.DateDelivery
                     {
                         Title = $"Dostawa od obcego hodowcy",
                         AllDay = true,
-                        Start = delivery.TermTerm.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
-                        End = delivery.TermTerm.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+                        Start = delivery.Date,
+                        End = delivery.Date
                     });
                 }
             }

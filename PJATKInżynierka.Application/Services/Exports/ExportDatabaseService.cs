@@ -33,11 +33,11 @@ namespace Application.Services.Exports
 
             await _pjatkContext.SaveChangesAsync();
 
-            var termID = _pjatkContext.Terms.OrderBy(x => x.TermId).LastAsync().Result.TermId;
+            var term = await _pjatkContext.Terms.FirstAsync(x => x.Date == export.Date);
 
             await _pjatkContext.Exports.AddAsync(new Export
             {
-                TermTermId = termID,
+                TermTermId = term.TermId,
                 NumberMale = export.NumberMale,
                 NumberFemale = export.NumberFemale,
                 Weight = export.Weight,
@@ -47,7 +47,7 @@ namespace Application.Services.Exports
             await _pjatkContext.Deliveries.AddAsync(new Delivery
             {
                 Weight = export.Weight,
-                TermTermId = termID,
+                TermTermId = term.TermId,
             });
 
             await _pjatkContext.SaveChangesAsync();

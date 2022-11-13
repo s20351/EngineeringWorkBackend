@@ -52,7 +52,11 @@ namespace Application.Services.Farms
         {
             var farm = await _pjatkContext.Farms.Where(x => x.FarmId == farmId).FirstOrDefaultAsync();
             var cycle = await _pjatkContext.Cycles.Where(x => x.FarmFarmId == farmId && x.DateIn <= DateTime.Now && (x.DateOut > DateTime.Now || x.DateOut == null)).FirstOrDefaultAsync();
-            
+            if (farm == null)
+            {
+                return new GetObjectInfoDTO { };
+            }
+
             if(cycle == null)
             {
                 return new GetObjectInfoDTO
@@ -85,14 +89,24 @@ namespace Application.Services.Farms
 
         private int CalculateDeadMale(Cycle cycle, OrderHatchery orderHatchery)
         {
-            var deadMale = orderHatchery.NumberMale - cycle.NumberMale;
-            return (int)deadMale;
+            if(orderHatchery != null)
+            {
+                var deadMale = orderHatchery.NumberMale - cycle.NumberMale;
+                return (int)deadMale;
+            }
+
+            return 0;
         }
 
         private int CalculateDeadFemale(Cycle cycle, OrderHatchery orderHatchery)
         {
-            var deadFemale = orderHatchery.NumberFemale - cycle.NumberFemale;
-            return (int)deadFemale;
+            if (orderHatchery != null)
+            {
+                var deadFemale = orderHatchery.NumberFemale - cycle.NumberFemale;
+                return (int)deadFemale;
+            }
+
+            return 0;
         }
         private int CalculateDaysToExport(List<Export> exports)
         {
@@ -108,11 +122,18 @@ namespace Application.Services.Farms
                     exportDays.Add(exportDay);
                 }
 
-                var closestExportDay = exportDays.OrderByDescending(x => x.Date).Last().Date;
+                if (exportDays.Any())
+                {
+                    var closestExportDay = exportDays.OrderByDescending(x => x.Date).Last().Date;
 
-                var daysToExport = (int)(closestExportDay - DateTime.Now).TotalDays;
+                    var daysToExport = (int)(closestExportDay - DateTime.Now).TotalDays;
+                    return daysToExport;
+                }
+                else
+                {
+                    return -1;
+                }
 
-                return daysToExport;
             }
             else
             {
