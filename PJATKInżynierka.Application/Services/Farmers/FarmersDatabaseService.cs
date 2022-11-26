@@ -4,7 +4,6 @@ using Domain.Models;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using PJATKInżynierka.DTOs.FarmersDTOs;
-using PJATKInżynierka.DTOs.FarmsDTOs;
 using System.Globalization;
 
 namespace Application.Services.Farmers

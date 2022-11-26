@@ -21,7 +21,7 @@ namespace PJATKInżynierka.Controllers
         {
             await _dbService.AddOrderFeed(orderHatchery, farmId);
 
-            return Ok();
+            return StatusCode(200, "OrderFeed added");
         }
 
         [Route("{farmId}")]

@@ -63,7 +63,7 @@ namespace Application.Services.DateDelivery
             await _pjatkContext.Exports.LoadAsync();
             await _pjatkContext.Terms.LoadAsync();
 
-            var deliveries = await _pjatkContext.Deliveries.Where(x => x.TermTerm.Date >= DateTime.Now).ToListAsync();
+            var deliveries = await _pjatkContext.Deliveries.ToListAsync();
             var exports = await _pjatkContext.Exports.ToListAsync();
 
             List<int> termIds = new List<int>();

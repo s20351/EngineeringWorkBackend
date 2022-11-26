@@ -21,7 +21,7 @@ namespace PJATKInżynierka.Controllers
         {
             await _dbService.AddExport(export, cycleId);
 
-            return Ok();
+            return StatusCode(200, "Export added");
         }   
 
         [Route("{cycleId}")]

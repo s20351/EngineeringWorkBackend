@@ -38,7 +38,7 @@ namespace PJATKInżynierka.Controllers
         {
             await _dbService.AddFarmer(farmer);
 
-            return Ok();
+            return StatusCode(200, "Farmer added");
         }
 
         [Route("GetFarmerEvents/{farmerId}")]

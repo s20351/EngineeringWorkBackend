@@ -5,10 +5,9 @@ using Application.Services.Farmers;
 using Application.Services.Farms;
 using Application.Services.OrdersFeed;
 using Application.Services.OrdersHatchery;
-using Azure.Identity;
+using Domain.Services;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -56,6 +55,7 @@ builder.Services.AddTransient<IExportDatabaseService, ExportDatabaseService>();
 builder.Services.AddTransient<IOrderHatcheryDatabaseService, OrderHatcheryDatabaseService>();
 builder.Services.AddTransient<IOrderFeedDatabaseService, OrderFeedDatabaseService>();
 builder.Services.AddTransient<IDeliveryDatabaseService, DeliveryDatabaseService>();
+builder.Services.AddTransient<IAuthDatabaseService, AuthDatabaseService>();
 
 var app = builder.Build();
 

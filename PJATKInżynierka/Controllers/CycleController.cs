@@ -21,7 +21,7 @@ namespace PJATKInżynierka.Controllers
         {
             await _dbService.CreateCycle(cycle, farmId);
 
-            return Ok();
+            return StatusCode(200, "Cycle created"); ;
         }
 
         [Route("{farmerId}")]

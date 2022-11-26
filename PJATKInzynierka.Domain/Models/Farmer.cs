@@ -14,6 +14,8 @@ namespace Domain.Models
         public string Name { get; set; } = null!;
         public string Surname { get; set; } = null!;
         public string FarmerColor { get; set; } = null!;
+        public string? Email { get; set; }
+        public string? Password { get; set; }
 
         public virtual ICollection<Farm> Farms { get; set; }
     }
